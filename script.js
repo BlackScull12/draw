@@ -4,7 +4,7 @@ const stepsContainer = document.getElementById('stepsContainer');
 
 generateBtn.addEventListener('click', async () => {
   if (!imageInput.files[0]) {
-    alert("Please upload an image first!");
+    alert("Please upload an image!");
     return;
   }
 
@@ -12,39 +12,33 @@ generateBtn.addEventListener('click', async () => {
   const reader = new FileReader();
 
   reader.onload = async () => {
-    const imageData = reader.result; // base64 image
-    
-    stepsContainer.innerHTML = '<p>Generating steps... please wait.</p>';
+    const imageData = reader.result; // Base64
+
+    stepsContainer.innerHTML = '<p>Generating 20 pencil sketch steps, please wait...</p>';
 
     try {
-      // Simulate API call for demonstration
-      // In reality, you would call an AI API to generate images
-      const steps = await generateDrawingSteps(imageData);
+      const response = await fetch('/generate-step', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: imageData })
+      });
 
-      // Show steps
+      const result = await response.json();
+      const steps = result.steps;
+
       stepsContainer.innerHTML = '';
-      steps.forEach((step, index) => {
+      steps.forEach((step, idx) => {
         const div = document.createElement('div');
         div.className = 'step';
-        div.innerHTML = `<h4>Step ${index + 1}</h4><img src="${step}" alt="Step ${index + 1}">`;
+        div.innerHTML = `<h4>Step ${idx + 1}</h4><img src="${step}" alt="Step ${idx + 1}">`;
         stepsContainer.appendChild(div);
       });
 
-    } catch (error) {
+    } catch (err) {
+      console.error(err);
       stepsContainer.innerHTML = '<p>Failed to generate steps.</p>';
-      console.error(error);
     }
   };
 
   reader.readAsDataURL(file);
 });
-
-// Fake API function for now
-async function generateDrawingSteps(base64Image) {
-  // For testing, just return the same image 20 times
-  const steps = [];
-  for (let i = 0; i < 20; i++) {
-    steps.push(base64Image);
-  }
-  return steps;
-}
