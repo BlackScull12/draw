@@ -17,8 +17,11 @@ generateBtn.addEventListener('click', async () => {
     stepsContainer.innerHTML = '<p>Generating steps... please wait.</p>';
 
     try {
+      // Simulate API call for demonstration
+      // In reality, you would call an AI API to generate images
       const steps = await generateDrawingSteps(imageData);
 
+      // Show steps
       stepsContainer.innerHTML = '';
       steps.forEach((step, index) => {
         const div = document.createElement('div');
@@ -36,8 +39,9 @@ generateBtn.addEventListener('click', async () => {
   reader.readAsDataURL(file);
 });
 
-// Placeholder function: returns the same image 20 times
+// Fake API function for now
 async function generateDrawingSteps(base64Image) {
+  // For testing, just return the same image 20 times
   const steps = [];
   for (let i = 0; i < 20; i++) {
     steps.push(base64Image);
